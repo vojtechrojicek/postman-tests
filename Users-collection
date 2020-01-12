@@ -1,0 +1,567 @@
+{
+	"info": {
+		"_postman_id": "91626a3f-50e1-4312-ab76-c3eaa93f9fcf",
+		"name": "Users Integrations",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Public",
+			"item": [
+				{
+					"name": "Get",
+					"item": [
+						{
+							"name": "Seed",
+							"item": [
+								{
+									"name": "New User 1",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "fd6d298c-7e66-430b-a411-e282f7bd3b3a",
+												"exec": [
+													"var jsonData = pm.response.json();",
+													"pm.environment.set(\"Temp.Get.UserId\", jsonData.id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"givenName\": \"test\",\r\n    \"familyName\": \"test\",\r\n    \"address\": \"test\",\r\n    \"age\": 111\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BaseUrl}}/users",
+											"host": [
+												"{{BaseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Get all",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "db94afb4-d3da-4436-ba29-2ea2d069e466",
+										"exec": [
+											"var users = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Retrieving a users should return status code 200.\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Retrieving a users should return an array.\", function () {\r",
+											"    pm.expect(users).to.be.an('array');\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BaseUrl}}/users",
+									"host": [
+										"{{BaseUrl}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetById",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "8d7bf295-be3c-4045-ac3f-85dc23db0d51",
+										"exec": [
+											"var user = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Retrieving a user by id should return status code 200.\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Retrieving a single user  should return an object.\", function () {\r",
+											"    pm.expect(user).to.be.an('object');\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Retrieving a single user should return correct data format.\", function () {\r",
+											"     pm.expect(tv4.validate(user, pm.environment.get(\"Temp.Get.UserSchema\"))).to.be.true;\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BaseUrl}}/users/{{Temp.Get.UserId}}",
+									"host": [
+										"{{BaseUrl}}"
+									],
+									"path": [
+										"users",
+										"{{Temp.Get.UserId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetById non existing record",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "8d7bf295-be3c-4045-ac3f-85dc23db0d51",
+										"exec": [
+											"pm.test(\"Retrieving a non existing userid should return status code 404.\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BaseUrl}}/users/0",
+									"host": [
+										"{{BaseUrl}}"
+									],
+									"path": [
+										"users",
+										"0"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "0319fc63-454e-4a10-a924-c8a7f665c674",
+								"type": "text/javascript",
+								"exec": [
+									"const userSchema = {",
+									"    \"required\": [\"id\", \"familyName\", \"givenName\"],",
+									"    \"not\": { \"required\": [ \"address\" ] },",
+									"    \"properties\": {",
+									"        \"id\": {\"type\": \"integer\"},",
+									"        \"familyName\": {\"type\": \"string\"},",
+									"        \"givenName\": {\"type\": \"string\"}",
+									"    }",
+									"};",
+									"",
+									"pm.environment.set(\"Temp.Get.UserSchema\", userSchema);",
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "37764800-bbdd-4fa9-9a5d-f38e25af735d",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Add",
+					"item": [
+						{
+							"name": "Add",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "fd6d298c-7e66-430b-a411-e282f7bd3b3a",
+										"exec": [
+											"var user = pm.response.json();\r",
+											"\r",
+											"pm.test(\"Add a user by id should return status code 200.\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Add a single user should return correct data format.\", function () {\r",
+											"     pm.expect(tv4.validate(user, pm.environment.get(\"Temp.Add.UserSchema\"))).to.be.true;\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"givenName\": \"New\",\r\n    \"familyName\": \"Guy\",\r\n    \"address\": \"Home\",\r\n    \"age\": 130\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BaseUrl}}/users",
+									"host": [
+										"{{BaseUrl}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "2da29ad4-5f5d-4078-8e8d-8d3748643679",
+								"type": "text/javascript",
+								"exec": [
+									"const userSchema = {",
+									"    \"required\": [\"id\"],",
+									"    \"properties\": {",
+									"        \"id\": {\"type\": \"integer\"}",
+									"    }",
+									"};",
+									"",
+									"pm.environment.set(\"Temp.Add.UserSchema\", userSchema);",
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "50ebecb4-5564-40a1-9139-a76f6f3cd646",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Update",
+					"item": [
+						{
+							"name": "Seed Copy",
+							"item": [
+								{
+									"name": "New User 1",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "fd6d298c-7e66-430b-a411-e282f7bd3b3a",
+												"exec": [
+													"var jsonData = pm.response.json();",
+													"pm.environment.set(\"Temp.Update.UserId\", jsonData.id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"givenName\": \"test\",\r\n    \"familyName\": \"test\",\r\n    \"address\": \"test\",\r\n    \"age\": 111\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BaseUrl}}/users",
+											"host": [
+												"{{BaseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Update",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "8e6fb0fb-6645-4ffc-9349-2597fcc0f7cb",
+										"exec": [
+											"pm.test(\"Updating a user by id should return status code 204.\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"givenName\": \"New\",\r\n    \"familyName\": \"Guy\",\r\n    \"address\": \"Home\",\r\n    \"age\": 12\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BaseUrl}}/users/{{Temp.Update.UserId}}",
+									"host": [
+										"{{BaseUrl}}"
+									],
+									"path": [
+										"users",
+										"{{Temp.Update.UserId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Delete",
+					"item": [
+						{
+							"name": "Seed Copy",
+							"item": [
+								{
+									"name": "New User 1",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "fd6d298c-7e66-430b-a411-e282f7bd3b3a",
+												"exec": [
+													"var jsonData = pm.response.json();",
+													"pm.environment.set(\"Temp.Delete.UserId\", jsonData.id);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"givenName\": \"test\",\r\n    \"familyName\": \"test\",\r\n    \"address\": \"test\",\r\n    \"age\": 111\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BaseUrl}}/users",
+											"host": [
+												"{{BaseUrl}}"
+											],
+											"path": [
+												"users"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"protocolProfileBehavior": {},
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Delete",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "7b2633e9-22ba-4ed2-a09a-ac820149e2e9",
+										"exec": [
+											"pm.test(\"Deleting a user by id should return status code 204.\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{BaseUrl}}/users/{{Temp.Delete.UserId}}",
+									"host": [
+										"{{BaseUrl}}"
+									],
+									"path": [
+										"users",
+										"{{Temp.Delete.UserId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Clean up",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b5804d35-6af3-4f4b-b6f5-b5a716d91a20",
+						"exec": [
+							"function cleanup() {\r",
+							"    const clean = _.keys(pm.environment.toObject())\r",
+							"    _.each(clean, (arrItem) => {\r",
+							"        if (arrItem.startsWith(\"Temp.\") || arrItem.startsWith(\"temp.\")) {\r",
+							"            pm.environment.unset(arrItem)\r",
+							"        }\r",
+							"    })\r",
+							"}\r",
+							"\r",
+							"cleanup();"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c72a25ae-1fb4-4029-8a5b-ed6d5c32135f",
+						"exec": [
+							"pm.test(\"Cleanup should return status code 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "CLEANUP",
+				"header": [],
+				"url": {
+					"raw": "{{BaseUrl}}/cleanup",
+					"host": [
+						"{{BaseUrl}}"
+					],
+					"path": [
+						"cleanup"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

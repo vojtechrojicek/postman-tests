@@ -1,0 +1,14 @@
+{
+	"id": "76e52c7b-1234-4f14-8edb-bf283888ae98",
+	"name": "Users-Test",
+	"values": [
+		{
+			"key": "BaseUrl",
+			"value": "https://test-users.azurewebsites.net",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2020-01-12T19:59:46.627Z",
+	"_postman_exported_using": "Postman/7.15.0"
+}
